@@ -1,0 +1,25 @@
+name: edgepanel
+
+services:
+  postgres:
+    image: postgres:18
+    restart: unless-stopped
+    container_name: EdgePostgres
+    environment:
+      POSTGRES_DB: edgepanel
+      POSTGRES_USER: edgepanel
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - ./postgresql:/var/lib/postgresql
+
+  redis:
+    image: redis:8
+    restart: unless-stopped
+    container_name: EdgeRedis
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}"]
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - ./redis:/data

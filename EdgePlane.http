@@ -1,6 +1,0 @@
-@EdgePlane_HostAddress = http://localhost:5295
-
-GET {{EdgePlane_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

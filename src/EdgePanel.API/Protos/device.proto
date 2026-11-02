@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package device;
+
+message Device {
+    string hostname = 1;
+}
