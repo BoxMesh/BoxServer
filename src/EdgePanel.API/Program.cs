@@ -9,16 +9,13 @@ public partial class Program
     private static void Main(string[] args)
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-        // GRPC Service
         builder.Services.AddGrpc();
-        // Restful Service
         builder.Services.AddControllers(
             options =>
             {
                 options.Filters.Add<ResponseFilter>();
             }
         );
-        builder.Services.AddOpenApi();
         builder.Services.AddInfrastructure(builder.Configuration);
         WebApplication app = builder.Build();
         app.UseHttpsRedirection();
