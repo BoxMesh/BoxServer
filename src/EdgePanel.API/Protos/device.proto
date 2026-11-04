@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-option csharp_namespace = "EdgePanel.API.Protos";
-
-package device;
-
-message Device {
-    string hostname = 1;
-}

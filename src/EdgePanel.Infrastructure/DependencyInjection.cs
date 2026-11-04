@@ -1,7 +1,7 @@
 using EdgePanel.Infrastructure.Database.Context;
 using EdgePanel.Infrastructure.Database.Entities;
-using EdgePanel.Infrastructure.Services;
-using EdgePanel.Infrastructure.Services.Base;
+using EdgePanel.Infrastructure.Service;
+using EdgePanel.Infrastructure.Service.Base;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -21,7 +21,7 @@ public static class DependencyInjection
             )
         );
 
-        services.AddScoped<IService<Device>, DeviceService>();
+        services.AddScoped<IService<User>, AuthService>();
 
         return services;
     }

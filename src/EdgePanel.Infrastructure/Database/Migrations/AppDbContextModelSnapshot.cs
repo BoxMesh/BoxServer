@@ -22,7 +22,7 @@ namespace EdgePanel.Infrastructure.Database.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("EdgePanel.Infrastructure.Database.Entities.Device", b =>
+            modelBuilder.Entity("EdgePanel.Infrastructure.Database.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -34,7 +34,12 @@ namespace EdgePanel.Infrastructure.Database.Migrations
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("HostName")
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
@@ -47,7 +52,7 @@ namespace EdgePanel.Infrastructure.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Device", (string)null);
+                    b.ToTable("User", (string)null);
                 });
 #pragma warning restore 612, 618
         }

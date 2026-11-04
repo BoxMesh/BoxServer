@@ -10,13 +10,13 @@ public class AppDbContext : DbContext
     {
     }
 
-    public DbSet<Entities.Device> Devices { get; set; } = null!;
+    public DbSet<Entities.User> Users { get; set; } = null!;
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfigurationsFromAssembly(
-            typeof(DeviceConfiguration).Assembly
+            typeof(UserConfiguration).Assembly
         );
     }
 }

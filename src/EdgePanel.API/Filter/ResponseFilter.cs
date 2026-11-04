@@ -1,9 +1,9 @@
-using EdgePanel.Response;
+using EdgePanel.API.Response;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace EdgePanel.Filter
+namespace EdgePanel.API.Filter
 {
     public class ResponseFilter : IAsyncAlwaysRunResultFilter
     {

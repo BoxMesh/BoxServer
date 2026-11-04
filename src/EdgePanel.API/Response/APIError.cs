@@ -1,4 +1,4 @@
-namespace EdgePanel.Response
+namespace EdgePanel.API.Response
 {
     public class APIError<T>
     {

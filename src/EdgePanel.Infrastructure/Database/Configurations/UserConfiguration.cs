@@ -5,13 +5,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EdgePanel.Infrastructure.Database.Configurations;
 
-public class DeviceConfiguration : IEntityTypeConfiguration<Device>
+public class UserConfiguration : IEntityTypeConfiguration<User>
 {
-    public void Configure(EntityTypeBuilder<Device> builder)
+    public void Configure(EntityTypeBuilder<User> builder)
     {
-        builder.ToTable("Device");
+        builder.ToTable("User");
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.HostName).HasMaxLength(255).IsRequired();
+        builder.Property(x => x.Email).HasMaxLength(255).IsRequired();
+        builder.Property(x => x.Password).HasMaxLength(255).IsRequired();
         builder.Property(x => x.CreatedAt).IsRequired();
         builder.Property(x => x.UpdatedAt).IsRequired(false);
     }
