@@ -1,5 +1,10 @@
+using System.Text;
+
 using EdgePanel.API.Filter;
 using EdgePanel.Infrastructure;
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 public partial class Program
 {
     private static void Main(string[] args)
@@ -15,6 +20,31 @@ public partial class Program
         );
         builder.Services.AddProblemDetails();
         builder.Services.AddInfrastructure(builder.Configuration);
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
+            options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:AccessKey"]!))
+                };
+                // Token comes from the HttpOnly cookie set at sign-in, not the Authorization header.
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        context.Token = context.Request.Cookies["AccessToken"];
+                        return Task.CompletedTask;
+                    }
+                };
+            }
+        );
+        builder.Services.AddAuthorization();
         WebApplication app = builder.Build();
         app.UseExceptionHandler();
         app.MapOpenApi();
@@ -23,6 +53,7 @@ public partial class Program
             options.SwaggerEndpoint("/openapi/v1.json", "v1");
         });
         app.UseHttpsRedirection();
+        app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
         app.MapFallback("{*path}", ExceptionFilter.NotFound);

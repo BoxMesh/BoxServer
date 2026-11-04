@@ -1,22 +1,58 @@
+using System.Security.Claims;
+using System.Text;
 using EdgePanel.API.DTO.Auth;
 using EdgePanel.Infrastructure.Database.Entities;
 using EdgePanel.Infrastructure.Service;
-
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 namespace EdgePanel.API.Controller;
 
 
 [ApiController]
 [Route("[controller]")]
-public class AuthController(AuthService _authService) : ControllerBase
+public class AuthController(AuthService _authService,IConfiguration configuration) : ControllerBase
 {
+    private string CreateToken(User user, string keyName, TimeSpan lifetime)
+    {
+        SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(configuration[keyName]!));
+        SecurityTokenDescriptor descriptor = new()
+        {
+            Issuer = configuration["Jwt:Issuer"],
+            Audience = configuration["Jwt:Audience"],
+            Expires = DateTime.UtcNow.Add(lifetime),
+            Subject = new ClaimsIdentity(
+            [
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            ]),
+            SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256),
+        };
+        return new JsonWebTokenHandler().CreateToken(descriptor);
+    }
+    private void SetTokenCookie(User user, string cookieName, string keyName, TimeSpan lifetime)
+    {
+        Response.Cookies.Append(cookieName, CreateToken(user, keyName, lifetime), new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTimeOffset.UtcNow.Add(lifetime),
+        });
+    }
+
     [HttpPost("/sign-in")]
     public async Task<IActionResult> SignIn([FromBody] SignInRequest SignIn)
     {
-        if (await _authService.SignIn(SignIn.Email))
+        User? user = await _authService.SignIn(SignIn.Email, SignIn.Password);
+        if (user == null)
         {
-            return Ok(SignIn);
+            return Unauthorized("Unauthorized");
         }
-        return Unauthorized("Unauthorized");
+        SetTokenCookie(user, "AccessToken", "Jwt:AccessKey", TimeSpan.FromMinutes(15));
+        SetTokenCookie(user, "RefreshToken", "Jwt:RefreshKey", TimeSpan.FromDays(30));
+        return Ok(new { user.Id, user.Email });
+
     }
+
 }
