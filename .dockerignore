@@ -24,3 +24,6 @@
 LICENSE
 README.md
 Makefile
+# Local database volumes (compose.yml)
+postgresql
+redis
