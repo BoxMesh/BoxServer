@@ -1,7 +1,7 @@
 using EdgePanel.API.Filter;
 using EdgePanel.Infrastructure;
 public partial class Program
-{   
+{
     private static void Main(string[] args)
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -25,7 +25,7 @@ public partial class Program
         app.UseHttpsRedirection();
         app.UseAuthorization();
         app.MapControllers();
-        app.MapFallback("{*path}",ExceptionFilter.NotFound);
+        app.MapFallback("{*path}", ExceptionFilter.NotFound);
         app.Run();
     }
 }

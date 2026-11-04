@@ -1,31 +1,25 @@
+using EdgePanel.Infrastructure.Database.Context;
 using EdgePanel.Infrastructure.Database.Entities;
 using EdgePanel.Infrastructure.Service.Base;
+
+using Microsoft.EntityFrameworkCore;
 namespace EdgePanel.Infrastructure.Service;
 
-public class AuthService : IService<User>
+public class AuthService(AppDbContext context) : IService<User>
 {
-    public override Task<User> CreateAsync(User entity)
+    public async Task<bool> SignUp(String Email, String Password)
     {
-        return Task.FromResult(entity);
+        await context.Users.AddAsync(new User
+        {
+            Email = Email,
+            Password = Password,
+        });
+        await context.SaveChangesAsync();
+        return true;
     }
-
-    public override async Task<bool> DeleteAsync(Guid id)
+    public async Task<bool> SignIn(String Email)
     {
-        return await Task.FromResult(false);
-    }
-
-    public override Task<List<User>> GetAllAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public override Task<User?> GetByIdAsync(Guid id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override Task<bool> UpdateAsync(Guid id, User entity)
-    {
-        throw new NotImplementedException();
+        User? user = await context.Users.FirstOrDefaultAsync(user => user.Email == Email);
+        return user != null;
     }
 }

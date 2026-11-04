@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EdgePanel.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20261104025011_UserTable")]
+    [Migration("20261104072756_UserTable")]
     partial class UserTable
     {
         /// <inheritdoc />
@@ -54,6 +54,9 @@ namespace EdgePanel.Infrastructure.Database.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("User", (string)null);
                 });

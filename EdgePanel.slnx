@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/EdgePanel.API/EdgePanel.API.csproj" />
+    <Project Path="src/EdgePanel.CLI/EdgePanel.CLI.csproj" />
     <Project Path="src/EdgePanel.Infrastructure/EdgePanel.Infrastructure.csproj" />
   </Folder>
 </Solution>

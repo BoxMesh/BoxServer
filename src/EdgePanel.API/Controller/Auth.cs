@@ -8,16 +8,15 @@ namespace EdgePanel.API.Controller;
 
 [ApiController]
 [Route("[controller]")]
-public class AuthController(AuthService authService) : ControllerBase
+public class AuthController(AuthService _authService) : ControllerBase
 {
-    [HttpPost("sign-in")]
-    public async Task<IActionResult> SignIn([FromBody] SignInRequest request)
+    [HttpPost("/sign-in")]
+    public async Task<IActionResult> SignIn([FromBody] SignInRequest SignIn)
     {
-        User user = await authService.CreateAsync(new User
+        if (await _authService.SignIn(SignIn.Email))
         {
-            Email = request.Email,
-            Password = request.Password
-        });
-        return Ok(new { Message = "Sign-in successful", Email = user.Email });
+            return Ok(SignIn);
+        }
+        return Unauthorized("Unauthorized");
     }
 }

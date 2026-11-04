@@ -20,8 +20,7 @@ public static class DependencyInjection
                 configuration.GetConnectionString("PostgreSQL")
             )
         );
-
-        services.AddScoped<IService<User>, AuthService>();
+        services.AddScoped<AuthService>();
 
         return services;
     }
