@@ -33,7 +33,6 @@ public partial class Program
                     ValidAudience = builder.Configuration["Jwt:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:AccessKey"]!))
                 };
-                // Token comes from the HttpOnly cookie set at sign-in, not the Authorization header.
                 options.Events = new JwtBearerEvents
                 {
                     OnMessageReceived = context =>
@@ -45,6 +44,18 @@ public partial class Program
             }
         );
         builder.Services.AddAuthorization();
+        builder.Services.AddCors(
+            options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.SetIsOriginAllowed(_ => true)
+                        .AllowCredentials()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            }
+        );
         WebApplication app = builder.Build();
         app.UseExceptionHandler();
         app.MapOpenApi();
@@ -53,6 +64,7 @@ public partial class Program
             options.SwaggerEndpoint("/openapi/v1.json", "v1");
         });
         app.UseHttpsRedirection();
+        app.UseCors();
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
