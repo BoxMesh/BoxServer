@@ -1,24 +1,27 @@
 ﻿using System.CommandLine;
+
 using EdgePanel.CLI.Subcommand.Admin;
 using EdgePanel.Infrastructure;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace EdgePanel.CLI;
 
 public partial class Program
 {
     private static async Task<int> Main(string[] args)
     {
-        HostApplicationBuilder builder = Host.CreateApplicationBuilder(new HostApplicationBuilderSettings
-        {
-            ContentRootPath = AppContext.BaseDirectory
-        });
-        builder.Logging.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.None);
-        builder.Services.AddInfrastructure(builder.Configuration);
-        using IHost host = builder.Build();
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddEnvFile()
+            .AddEnvironmentVariables()
+            .Build();
+        ServiceProvider services = new ServiceCollection()
+            .AddInfrastructure(configuration)
+            .BuildServiceProvider();
 
-        RootCommand root = new("EdgePanel CLI");
-        root.Subcommands.Add(Admin.cmd(host.Services));
+        RootCommand root = new("BoxServer CLI");
+        root.Subcommands.Add(Admin.cmd(services));
         return await root.Parse(args).InvokeAsync();
     }
 }

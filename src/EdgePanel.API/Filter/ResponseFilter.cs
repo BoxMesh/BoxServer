@@ -18,7 +18,15 @@ namespace EdgePanel.API.Filter
                 }
                 else
                 {
-                    result.Value = new APIResponse<object?> { Data = result.Value };
+                    if (result.StatusCode >= 200 && result.StatusCode < 300)
+                    {
+                        result.Value = new APIResponse<object?> { Data = result.Value };    
+                    }
+                    else
+                    {
+                        result.Value = new APIError<object?> { Error = result.Value };    
+                    }
+                    
                 }
                 result.DeclaredType = result.Value.GetType();
             }

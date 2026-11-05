@@ -18,8 +18,8 @@ public class AuthController(AuthService _authService,IConfiguration configuratio
         SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(configuration[keyName]!));
         SecurityTokenDescriptor descriptor = new()
         {
-            Issuer = configuration["Jwt:Issuer"],
-            Audience = configuration["Jwt:Audience"],
+            Issuer = "BoxServer",
+            Audience = "BoxServer",
             Expires = DateTime.UtcNow.Add(lifetime),
             Subject = new ClaimsIdentity(
             [
@@ -30,9 +30,9 @@ public class AuthController(AuthService _authService,IConfiguration configuratio
         };
         return new JsonWebTokenHandler().CreateToken(descriptor);
     }
-    private void SetTokenCookie(User user, string cookieName, string keyName, TimeSpan lifetime)
+    private void SetTokenCookie(User user, string cookieName, string cookieValue, TimeSpan lifetime)
     {
-        Response.Cookies.Append(cookieName, CreateToken(user, keyName, lifetime), new CookieOptions
+        Response.Cookies.Append(cookieName, cookieValue, new CookieOptions
         {
             HttpOnly = true,
             Secure = true,
@@ -41,18 +41,36 @@ public class AuthController(AuthService _authService,IConfiguration configuratio
         });
     }
 
-    [HttpPost("/sign-in")]
-    public async Task<IActionResult> SignIn([FromBody] SignInRequest SignIn)
+    [HttpPost("/log-in")]
+    public async Task<IActionResult> LogIn([FromBody] SignInRequest SignIn)
     {
         User? user = await _authService.SignIn(SignIn.Email, SignIn.Password);
         if (user == null)
         {
             return Unauthorized("Unauthorized");
         }
-        SetTokenCookie(user, "AccessToken", "Jwt:AccessKey", TimeSpan.FromMinutes(15));
-        SetTokenCookie(user, "RefreshToken", "Jwt:RefreshKey", TimeSpan.FromDays(30));
+        SetTokenCookie(
+            user, 
+            "AccessToken",
+            CreateToken(user, "AccessKey", TimeSpan.FromMinutes(15)), 
+            TimeSpan.FromMinutes(15)
+        );
+        SetTokenCookie(
+            user, 
+            "RefreshToken", 
+            CreateToken(user, "SecretKey", TimeSpan.FromDays(30)), 
+            TimeSpan.FromDays(30)
+        );
         return Ok(new { user.Id, user.Email });
-
     }
+
+    [HttpPost("/log-out")]
+    public async Task<IActionResult> LogOut()
+    {
+        Response.Cookies.Delete("AccessToken");
+        Response.Cookies.Delete("RefreshToken");
+        return Ok();
+    }
+    
 
 }
