@@ -2,10 +2,9 @@
 using EdgePanel.CLI.Subcommand.Admin;
 using DotNetEnv;
 using EdgePanel.Infrastructure;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using EdgePanel.Infrastructure.Repository;
+using EdgePanel.Infrastructure.Service;
 
 public partial class Program
 {
@@ -20,8 +19,7 @@ public partial class Program
         await using var provider = services.BuildServiceProvider();
         RootCommand root = new("BoxServer CLI");
 
-        UserRepository userRepository = provider.GetRequiredService<UserRepository>();
-        root.Subcommands.Add(Admin.command(userRepository));
+        root.Subcommands.Add(Admin.command(provider.GetRequiredService<UserService>()));
         return await root.Parse(args).InvokeAsync();
     }
 }

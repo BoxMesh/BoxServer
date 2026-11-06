@@ -1,12 +1,11 @@
 using System.CommandLine;
-
 using EdgePanel.Infrastructure.Database.Entities;
-using EdgePanel.Infrastructure.Repository;
+using EdgePanel.Infrastructure.Service;
 namespace EdgePanel.CLI.Subcommand.Admin
 {
     public class Admin
     {
-        public static Command command(UserRepository _userRepository)
+        public static Command command(UserService _userService)
         {
             Command command = new("create-admin", "Tạo tài khoản admin");
             Option<string> email = new("--email")
@@ -28,11 +27,7 @@ namespace EdgePanel.CLI.Subcommand.Admin
                     string Password = parseResult.GetValue(password)!;
                     try
                     {
-                        await _userRepository.Create(new User
-                        {
-                            Email = Email,
-                            Password = Password, 
-                        });
+                        await _userService.SignUp(Email,Password);
                     } catch(Microsoft.EntityFrameworkCore.DbUpdateException){
                         Console.WriteLine("Failed to create user.");
                     }

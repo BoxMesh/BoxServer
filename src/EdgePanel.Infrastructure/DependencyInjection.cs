@@ -1,5 +1,9 @@
 using EdgePanel.Infrastructure.Database.Context;
+using EdgePanel.Infrastructure.Database.Entities;
 using EdgePanel.Infrastructure.Repository;
+using EdgePanel.Infrastructure.Service;
+
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,8 +28,10 @@ public static class DependencyInjection
                 Password = configuration["POSTGRES_PASSWORD"],
             }.ConnectionString)
         );
+        services.AddScoped<PasswordHasher<User>>();
+        
+        services.AddScoped<UserService>();
         services.AddScoped<UserRepository>();
-
         return services;
     }
 

@@ -11,9 +11,9 @@ namespace EdgePanel.API.Filter
         {
             if (context.Result is ObjectResult result)
             {
-                if (result.Value is ProblemDetails)
+                if (result.Value is ProblemDetails problemDetails)
                 {
-                    result.Value = new APIError<object?> { Error = result.Value };
+                    result.Value = new APIError<object?> { Error = problemDetails.Title };
                     result.ContentTypes.Clear();
                 }
                 else
