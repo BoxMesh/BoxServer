@@ -16,7 +16,15 @@ public class DeviceConfiguration : IEntityTypeConfiguration<Device>
             .HasMaxLength(255)
             .IsRequired();
 
-        builder.Property(x => x.OS)
+        builder.Property(x => x.OSName)
+            .HasMaxLength(255)
+            .IsRequired();
+
+        builder.Property(x => x.OSVersion)
+            .HasMaxLength(255)
+            .IsRequired();
+
+        builder.Property(x => x.OSArchitecture)
             .HasMaxLength(255)
             .IsRequired();
 
