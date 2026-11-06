@@ -12,16 +12,16 @@ public class DeviceConfiguration : IEntityTypeConfiguration<Device>
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Hostname)
-            .HasMaxLength(255)
-            .IsRequired();
-
         builder.Property(x => x.OSName)
-            .HasMaxLength(255)
+            .HasMaxLength(100)
             .IsRequired();
 
         builder.Property(x => x.OSVersion)
-            .HasMaxLength(255)
+            .HasMaxLength(100)
+            .IsRequired();
+
+        builder.Property(x => x.OSArchitecture)
+            .HasMaxLength(50)
             .IsRequired();
 
         builder.Property(x => x.OSArchitecture)
