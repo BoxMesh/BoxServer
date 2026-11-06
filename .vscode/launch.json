@@ -5,7 +5,7 @@
       "name": "API",
       "type": "dotnet",
       "request": "launch",
-      "projectPath": "${workspaceFolder}/src/EdgePanel.API/EdgePanel.API.csproj",
+      "projectPath": "${workspaceFolder}/src/BoxServer.API/BoxServer.API.csproj",
       "envFile": "${workspaceFolder}/.env"
     }
   ]

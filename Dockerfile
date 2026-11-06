@@ -4,15 +4,15 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 COPY dotnet-tools.json ./
 RUN dotnet tool restore
-COPY src/EdgePanel.API/EdgePanel.API.csproj src/EdgePanel.API/
-COPY src/EdgePanel.Infrastructure/EdgePanel.Infrastructure.csproj src/EdgePanel.Infrastructure/
-RUN dotnet restore src/EdgePanel.API/EdgePanel.API.csproj
+COPY src/BoxServer.API/BoxServer.API.csproj src/BoxServer.API/
+COPY src/BoxServer.Infra/BoxServer.Infra.csproj src/BoxServer.Infra/
+RUN dotnet restore src/BoxServer.API/BoxServer.API.csproj
 COPY src/ src/
-RUN dotnet publish src/EdgePanel.API/EdgePanel.API.csproj -c Release -o /app --no-restore
+RUN dotnet publish src/BoxServer.API/BoxServer.API.csproj -c Release -o /app --no-restore
 
 RUN dotnet ef migrations bundle \
-      --project src/EdgePanel.Infrastructure \
-      --startup-project src/EdgePanel.API \
+      --project src/BoxServer.Infra \
+      --startup-project src/BoxServer.API \
       --configuration Release \
       --output /app/efbundle
 
@@ -21,4 +21,4 @@ WORKDIR /app
 COPY --from=build /app .
 USER $APP_UID
 EXPOSE 8080
-ENTRYPOINT ["/bin/sh", "-c", "./efbundle && exec dotnet EdgePanel.API.dll"]
+ENTRYPOINT ["/bin/sh", "-c", "./efbundle && exec dotnet BoxServer.API.dll"]

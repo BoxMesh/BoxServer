@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/BoxServer.API/BoxServer.API.csproj" />
+    <Project Path="src/BoxServer.CLI/BoxServer.CLI.csproj" />
+    <Project Path="src/BoxServer.Infra/BoxServer.Infra.csproj" />
+  </Folder>
+</Solution>
