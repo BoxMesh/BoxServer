@@ -32,6 +32,9 @@ public static class DependencyInjection
         
         services.AddScoped<UserService>();
         services.AddScoped<UserRepository>();
+
+        services.AddScoped<DeviceService>();
+        services.AddScoped<DeviceRepository>();
         return services;
     }
 
