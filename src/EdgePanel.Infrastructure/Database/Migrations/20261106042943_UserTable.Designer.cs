@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace EdgePanel.Infrastructure.Database.Migrations
 {
-    [DbContext(typeof(AppDbContext))]
-    [Migration("20261104072756_UserTable")]
+    [DbContext(typeof(DBContext))]
+    [Migration("20261106042943_UserTable")]
     partial class UserTable
     {
         /// <inheritdoc />

@@ -1,52 +1,44 @@
 using System.CommandLine;
 
-using EdgePanel.Infrastructure.Service;
-
-using Microsoft.Extensions.DependencyInjection;
+using EdgePanel.Infrastructure.Database.Entities;
+using EdgePanel.Infrastructure.Repository;
 namespace EdgePanel.CLI.Subcommand.Admin
 {
-    public static class Admin
+    public class Admin
     {
-        public static Command cmd(IServiceProvider services)
+        public static Command command(UserRepository _userRepository)
         {
-            Command Admin = new("create-admin", "Tạo tài khoản admin");
-            Option<String> email = new("--email")
+            Command command = new("create-admin", "Tạo tài khoản admin");
+            Option<string> email = new("--email")
             {
                 Description = "Email",
                 Required = true,
             };
-            Option<String> password = new("--password")
+            Option<string> password = new("--password")
             {
                 Description = "Password",
                 Required = true,
             };
-            Admin.Options.Add(email);
-            Admin.Options.Add(password);
-            Admin.SetAction(
+            command.Options.Add(email);
+            command.Options.Add(password);
+            command.SetAction(
                 async (parseResult, cancellationToken) =>
                 {
                     string Email = parseResult.GetValue(email)!;
                     string Password = parseResult.GetValue(password)!;
-                    using IServiceScope scope = services.CreateScope();
-                    AuthService authService = scope.ServiceProvider.GetRequiredService<AuthService>();
                     try
                     {
-                        if (await authService.SignUp(Email, Password))
+                        await _userRepository.Create(new User
                         {
-                            Console.WriteLine("Registration successful.");
-                            return;
-                        }
-                        Console.WriteLine("Registration failed.");
+                            Email = Email,
+                            Password = Password, 
+                        });
+                    } catch(Microsoft.EntityFrameworkCore.DbUpdateException){
+                        Console.WriteLine("Failed to create user.");
                     }
-                    catch (Microsoft.EntityFrameworkCore.DbUpdateException)
-                    {
-                        Console.WriteLine("Email already exists.");
-                    }
-                    
                 }
             );
-
-            return Admin;
+            return command;
         }
 
     }

@@ -1,8 +1,5 @@
 using EdgePanel.Infrastructure.Database.Context;
-using EdgePanel.Infrastructure.Database.Entities;
-using EdgePanel.Infrastructure.Service;
-using EdgePanel.Infrastructure.Service.Base;
-
+using EdgePanel.Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,7 +14,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddDbContext<AppDbContext>(options =>
+        services.AddDbContext<DBContext>(options =>
             options.UseNpgsql(new NpgsqlConnectionStringBuilder
             {
                 Host = configuration["POSTGRES_HOST"],
@@ -27,7 +24,7 @@ public static class DependencyInjection
                 Password = configuration["POSTGRES_PASSWORD"],
             }.ConnectionString)
         );
-        services.AddScoped<AuthService>();
+        services.AddScoped<UserRepository>();
 
         return services;
     }

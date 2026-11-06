@@ -4,13 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EdgePanel.Infrastructure.Database.Context;
 
-public class AppDbContext : DbContext
+public class DBContext : DbContext
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    public DBContext(DbContextOptions<DBContext> options) : base(options)
     {
     }
-
-    public DbSet<Entities.User> Users { get; set; } = null!;
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

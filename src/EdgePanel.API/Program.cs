@@ -1,8 +1,6 @@
 using System.Text;
-
 using EdgePanel.API.Filter;
 using EdgePanel.Infrastructure;
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 public partial class Program
@@ -20,29 +18,6 @@ public partial class Program
         );
         builder.Services.AddProblemDetails();
         builder.Services.AddInfrastructure(builder.Configuration);
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
-            options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                    ValidAudience = builder.Configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:AccessKey"]!))
-                };
-                options.Events = new JwtBearerEvents
-                {
-                    OnMessageReceived = context =>
-                    {
-                        context.Token = context.Request.Cookies["AccessToken"];
-                        return Task.CompletedTask;
-                    }
-                };
-            }
-        );
         builder.Services.AddAuthorization();
         builder.Services.AddCors(
             options =>

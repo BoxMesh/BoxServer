@@ -1,27 +1,27 @@
 ﻿using System.CommandLine;
-
 using EdgePanel.CLI.Subcommand.Admin;
+using DotNetEnv;
 using EdgePanel.Infrastructure;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
-namespace EdgePanel.CLI;
+using EdgePanel.Infrastructure.Repository;
 
 public partial class Program
 {
     private static async Task<int> Main(string[] args)
     {
+        Env.Load();
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddEnvFile()
             .AddEnvironmentVariables()
             .Build();
-        ServiceProvider services = new ServiceCollection()
-            .AddInfrastructure(configuration)
-            .BuildServiceProvider();
-
+        ServiceCollection services = new ServiceCollection();
+        services.AddInfrastructure(configuration);
+        await using var provider = services.BuildServiceProvider();
         RootCommand root = new("BoxServer CLI");
-        root.Subcommands.Add(Admin.cmd(services));
+
+        UserRepository userRepository = provider.GetRequiredService<UserRepository>();
+        root.Subcommands.Add(Admin.command(userRepository));
         return await root.Parse(args).InvokeAsync();
     }
 }
