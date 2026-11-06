@@ -18,8 +18,9 @@ public class AuthController(
         {
             return Unauthorized();
         }
-        string AccessToken = jwtSecret.GenerateAccessToken(user);
-        string RefreshToken = jwtSecret.GenerateRefreshToken(user);
-        return Ok(new SignInResponse(AccessToken,RefreshToken));
+        return Ok(new SignInResponse(
+            jwtSecret.GenerateAccessToken(user),
+            jwtSecret.GenerateAccessToken(user)
+        ));
     }
 }
