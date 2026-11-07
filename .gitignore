@@ -11,6 +11,7 @@ nupkg/
 .env.docker
 # private keys / client certs (mTLS)
 *.key
+.vscode/
 *.p12
 *.pfx
 appsettings.Development.json

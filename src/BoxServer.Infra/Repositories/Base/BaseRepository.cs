@@ -1,21 +1,23 @@
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
-
 using BoxServer.Infra.Database.Context;
 using BoxServer.Infra.Database.Entities;
 
 using Microsoft.EntityFrameworkCore;
 
-public class BaseRepository<T>(DBContext _context) : IBaseRepository<T> where T : IBase
+public class BaseRepository<T>(DBContext _dbContext) : IBaseRepository<T> where T : IBase
 {
-    private readonly DbSet<T> _dbSet = _context.Set<T>();
+    private readonly DbSet<T> _dbSet = _dbContext.Set<T>();
 
     public async Task<T> Create(T Entity)
     {
         await _dbSet.AddAsync(Entity);
-        await _context.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
         return Entity;
+    }
+    public async Task<List<T>> FindMany()
+    {
+        return await _dbSet.ToListAsync();
     }
     public async Task<T?> FindBy(string By, object? Value)
     {
@@ -43,8 +45,8 @@ public class BaseRepository<T>(DBContext _context) : IBaseRepository<T> where T 
         {
             return null;
         }
-        _context.Entry(record).CurrentValues.SetValues(Entity);
-        await _context.SaveChangesAsync();
+        _dbContext.Entry(record).CurrentValues.SetValues(Entity);
+        await _dbContext.SaveChangesAsync();
         return record;
     }
     public async Task<T?> Delete(Guid ID)
@@ -55,7 +57,7 @@ public class BaseRepository<T>(DBContext _context) : IBaseRepository<T> where T 
             return null;
         }
         _dbSet.Remove(record);
-        await _context.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
         return record;
     }
 }

@@ -11,7 +11,7 @@ public partial class Program
     private static void Main(string[] args)
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
+        builder.Services.AddGrpc();
         builder.Services.AddScoped<JWTSecret>();
         builder.Services.AddInfrastructure(builder.Configuration);
         builder.Services.AddOpenApi(options =>
@@ -107,7 +107,11 @@ public partial class Program
         app.UseCors();
         app.UseAuthentication();
         app.UseAuthorization();
+
         app.MapControllers();
+        
+        app.MapGrpcService<GDeviceService>();
+
         app.MapFallback("{*path}", ExceptionFilter.NotFound);
         app.Run();
     }
