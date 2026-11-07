@@ -1,6 +1,8 @@
 using BoxServer.Infra.Database.Entities;
 using BoxServer.Infra.Repository;
 
+using Microsoft.AspNetCore.Http.Features;
+
 namespace BoxServer.Infra.Service
 {
     public class DeviceService(DeviceRepository deviceRepository) 
@@ -9,9 +11,14 @@ namespace BoxServer.Infra.Service
         {
             return await deviceRepository.FindMany();
         }
-        public async Task<Device> Ping(Device device)
+        public async Task<Device?> Ping(Device device)
         {
-            return await deviceRepository.Create(device);
+            Device? record = await deviceRepository.FindByID(device.Id);
+            if (record == null)
+            {
+                return await deviceRepository.Create(device);    
+            }
+            return await deviceRepository.Update(device.Id,device);
         }
     }
 }

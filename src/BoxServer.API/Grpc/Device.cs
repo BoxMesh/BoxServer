@@ -9,8 +9,9 @@ public class GDeviceService(DeviceService deviceService) : DeviceGRPC.DeviceGRPC
 {
     public override async Task<DeviceResponse> Ping(DeviceRequest device,ServerCallContext context)
     {
-        Device dPing = await deviceService.Ping(new Device
+        Device? dPing = await deviceService.Ping(new Device
         {
+            Id = Guid.Parse(device.Id),
             Hostname=device.HostName,
             OSName=device.OsName,
             OSVersion=device.OsVersion,
@@ -22,9 +23,11 @@ public class GDeviceService(DeviceService deviceService) : DeviceGRPC.DeviceGRPC
             Disk=device.Disk,
             Uptime=device.Uptime
         });
-        return new DeviceResponse
+        Any Data = Any.Pack(new BoolValue { Value = false });
+        if (dPing != null)
         {
-            Data = Any.Pack(new StringValue { Value = dPing.Id.ToString() })
+            Data = Any.Pack(new BoolValue { Value = false });
         };
+        return new DeviceResponse{Data = Data};
     }
 }

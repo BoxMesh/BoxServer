@@ -7,16 +7,17 @@ option csharp_namespace = "BoxServer.API.GRPC";
 package device;
 
 message DeviceRequest {
-    string host_name = 1;
-    string os_name = 2;
-    string os_version = 3;
-    string os_architecture = 4;
-    string ip_address = 5;
-    string mac_address = 6;
-    string cpu = 7;
-    int64 ram = 8;
-    int64 disk = 9;
-    int64 uptime = 10;
+    string id = 1;
+    string host_name = 2;
+    string os_name = 3;
+    string os_version = 4;
+    string os_architecture = 5;
+    string ip_address = 6;
+    string mac_address = 7;
+    string cpu = 8;
+    int64 ram = 9;
+    int64 disk = 10;
+    int64 uptime = 11;
 }
 
 message DeviceResponse {
