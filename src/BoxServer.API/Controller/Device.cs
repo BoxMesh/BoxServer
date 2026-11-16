@@ -6,11 +6,14 @@ using BoxServer.Infra.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+// Devices are addressed by their agent's ID: hostnames can repeat. An ID that isn't a UUID matches no route (404).
 [ApiController]
 [Authorize]
 [Route("/devices")]
 public class RPCDeviceController(DeviceService deviceService) : ControllerBase
 {
+    private const int MaxAlias = 100;
+
     [HttpGet()]
     public async Task<ActionResult<List<DeviceResponse>>> GetDevices()
     {
@@ -18,10 +21,23 @@ public class RPCDeviceController(DeviceService deviceService) : ControllerBase
         return Ok(devices.Select(DeviceResponse.From).ToList());
     }
 
-    [HttpGet("{host}")]
-    public async Task<ActionResult<DeviceResponse>> GetDevice(string host)
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<DeviceResponse>> GetDevice(Guid id)
     {
-        Device? device = await deviceService.GetByHostname(host);
+        Device? device = await deviceService.GetById(id);
+        return device == null ? NotFound() : Ok(DeviceResponse.From(device));
+    }
+
+    /// <summary>Sets the device's alias; an empty one clears it.</summary>
+    [HttpPatch("{id:guid}")]
+    public async Task<ActionResult<DeviceResponse>> UpdateDevice(Guid id, [FromBody] UpdateDeviceRequest request)
+    {
+        string alias = (request.Alias ?? "").Trim();
+        if (alias.Length > MaxAlias)
+        {
+            return BadRequest($"alias must be at most {MaxAlias} characters");
+        }
+        Device? device = await deviceService.SetAlias(id, alias);
         return device == null ? NotFound() : Ok(DeviceResponse.From(device));
     }
 
@@ -33,14 +49,14 @@ public class RPCDeviceController(DeviceService deviceService) : ControllerBase
         ["7d"] = (TimeSpan.FromDays(7), TimeSpan.FromHours(1)),
     };
 
-    [HttpGet("{host}/metrics")]
-    public async Task<ActionResult<List<MetricPoint>>> GetMetrics(string host, [FromQuery] string range = "24h")
+    [HttpGet("{id:guid}/metrics")]
+    public async Task<ActionResult<List<MetricPoint>>> GetMetrics(Guid id, [FromQuery] string range = "24h")
     {
         if (!Ranges.TryGetValue(range, out var r))
         {
             return BadRequest("range must be 1h, 24h or 7d");
         }
-        Device? device = await deviceService.GetByHostname(host);
+        Device? device = await deviceService.GetById(id);
         if (device == null)
         {
             return NotFound();
@@ -49,10 +65,10 @@ public class RPCDeviceController(DeviceService deviceService) : ControllerBase
     }
 
     /// <summary>The busiest processes at the agent's latest report.</summary>
-    [HttpGet("{host}/processes")]
-    public async Task<ActionResult<List<ProcessResponse>>> GetProcesses(string host)
+    [HttpGet("{id:guid}/processes")]
+    public async Task<ActionResult<List<ProcessResponse>>> GetProcesses(Guid id)
     {
-        Device? device = await deviceService.GetByHostname(host);
+        Device? device = await deviceService.GetById(id);
         return device == null ? NotFound() : Ok(ProcessResponse.FromJson(device.Processes));
     }
 }

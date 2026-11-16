@@ -15,9 +15,13 @@ public record ProcessResponse(int Pid, string Name, string User, string Status, 
     public static List<ProcessResponse> FromJson(string json) => JsonSerializer.Deserialize<List<ProcessResponse>>(json, JsonSerializerOptions.Web) ?? [];
 }
 
-/// <summary>A device in the shape BoxMesh reads (BoxMesh/src/types/device.ts).</summary>
+/// <summary>PATCH /devices/{id}: the alias to set; empty clears it.</summary>
+// Nullable: a non-nullable string would be [Required], which also refuses "", the way to clear the alias.
+public record UpdateDeviceRequest(string? Alias);
+
+/// <summary>A device in the shape BoxMesh reads (BoxMesh/src/types/device.ts). Id, not Host, identifies it.</summary>
 public record DeviceResponse(
-    string Host, string Alias, string Os, string OsVersion, string OsArchitecture, string OsFamily,
+    Guid Id, string Host, string Alias, string Os, string OsVersion, string OsArchitecture, string OsFamily,
     string Ip, string Mac, bool Online, string AgentVersion, bool AgentOutdated, string[] Groups, string Tag,
     DateTime LastSeen, DateTime EnrolledAt, double Cpu, double Ram, double Disk, int LatencyMs, DeviceHardware Hardware)
 {
@@ -28,7 +32,7 @@ public record DeviceResponse(
     {
         DateTime lastSeen = d.UpdatedAt ?? d.CreatedAt;
         return new DeviceResponse(
-            d.Hostname, "", d.OSName, d.OSVersion, d.OSArchitecture, OsFamilyOf(d.OSName),
+            d.Id, d.Hostname, d.Alias, d.OSName, d.OSVersion, d.OSArchitecture, OsFamilyOf(d.OSName),
             d.IPAddress, d.MacAddress, DateTime.UtcNow - lastSeen < OnlineWindow,
             // Not stored yet: groups, tag and latency.
             d.AgentVersion, false, [], "", lastSeen, d.CreatedAt, d.CpuUsage, d.RamUsage, d.DiskUsage, 0,

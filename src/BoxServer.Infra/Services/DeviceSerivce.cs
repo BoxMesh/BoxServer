@@ -11,9 +11,20 @@ namespace BoxServer.Infra.Service
         {
             return await deviceRepository.FindMany();
         }
-        public async Task<Device?> GetByHostname(string hostname)
+        public async Task<Device?> GetById(Guid id)
         {
-            return await deviceRepository.FindBy("Hostname", hostname);
+            return await deviceRepository.FindByID(id);
+        }
+        /// <summary>Renames the device in the console; leaves UpdatedAt alone, since that marks when the agent last reported.</summary>
+        public async Task<Device?> SetAlias(Guid id, string alias)
+        {
+            Device? record = await deviceRepository.FindByID(id);
+            if (record == null)
+            {
+                return null;
+            }
+            record.Alias = alias;
+            return await deviceRepository.Update(id, record);
         }
         public async Task<Device?> Ping(Device device)
         {
@@ -25,9 +36,11 @@ namespace BoxServer.Infra.Service
             }
             else
             {
-                // Update copies every field, so carry over when the device enrolled and stamp when it was last heard from.
+                // Update copies every field, so carry over what the agent doesn't send (when the device enrolled,
+                // the console's alias) and stamp when it was last heard from.
                 device.CreatedAt = record.CreatedAt;
                 device.CreatedBy = record.CreatedBy;
+                device.Alias = record.Alias;
                 device.UpdatedAt = DateTime.UtcNow;
                 saved = await deviceRepository.Update(device.Id,device);
             }

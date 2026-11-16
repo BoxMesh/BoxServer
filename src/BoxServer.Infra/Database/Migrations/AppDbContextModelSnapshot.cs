@@ -32,6 +32,11 @@ namespace BoxServer.Infra.Database.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Alias")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<string>("CPU")
                         .IsRequired()
                         .HasMaxLength(255)
