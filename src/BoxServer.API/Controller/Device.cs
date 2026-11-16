@@ -47,4 +47,12 @@ public class RPCDeviceController(DeviceService deviceService) : ControllerBase
         }
         return Ok(await deviceService.GetMetrics(device.Id, DateTime.UtcNow - r.Span, r.Step));
     }
+
+    /// <summary>The busiest processes at the agent's latest report.</summary>
+    [HttpGet("{host}/processes")]
+    public async Task<ActionResult<List<ProcessResponse>>> GetProcesses(string host)
+    {
+        Device? device = await deviceService.GetByHostname(host);
+        return device == null ? NotFound() : Ok(ProcessResponse.FromJson(device.Processes));
+    }
 }

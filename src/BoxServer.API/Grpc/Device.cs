@@ -1,4 +1,6 @@
 using BoxServer.API.GRPC;
+// Only this type: the DTO namespace has its own DeviceResponse, which would clash with the gRPC one.
+using ProcessResponse = BoxServer.API.DTO.Devices.ProcessResponse;
 using Grpc.Core;
 
 using Google.Protobuf.WellKnownTypes;
@@ -33,6 +35,7 @@ public class GDeviceService(DeviceService deviceService) : DeviceGRPC.DeviceGRPC
             DiskUsage=device.DiskUsage,
             NetIn=device.NetIn,
             NetOut=device.NetOut,
+            Processes=ProcessResponse.ToJson(device.Processes.Select(p => new ProcessResponse(p.Pid, p.Name, p.User, p.Status, p.Cpu, p.MemoryMb))),
         });
         return new DeviceResponse{Data = Any.Pack(new BoolValue { Value = dPing != null })};
     }

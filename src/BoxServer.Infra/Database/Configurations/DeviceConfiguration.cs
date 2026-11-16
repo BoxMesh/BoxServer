@@ -54,5 +54,9 @@ public class DeviceConfiguration : IEntityTypeConfiguration<Device>
 
         builder.Property(x => x.UpdatedAt)
             .IsRequired(false);
+
+        builder.Property(x => x.Processes)
+            .HasColumnType("jsonb")
+            .IsRequired();
     }
 }

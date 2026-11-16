@@ -1,8 +1,19 @@
+using System.Text.Json;
+
 using BoxServer.Infra.Database.Entities;
 
 namespace BoxServer.API.DTO.Devices;
 
 public record DeviceHardware(string Cpu, string Ram, string Disk, string Uptime);
+
+/// <summary>A process in the shape BoxMesh reads (DeviceProcess in BoxMesh/src/types/device.ts).</summary>
+public record ProcessResponse(int Pid, string Name, string User, string Status, double Cpu, double MemoryMb)
+{
+    // Device.Processes holds the list in this same shape, so reading it back is a plain deserialize.
+    public static string ToJson(IEnumerable<ProcessResponse> processes) => JsonSerializer.Serialize(processes, JsonSerializerOptions.Web);
+
+    public static List<ProcessResponse> FromJson(string json) => JsonSerializer.Deserialize<List<ProcessResponse>>(json, JsonSerializerOptions.Web) ?? [];
+}
 
 /// <summary>A device in the shape BoxMesh reads (BoxMesh/src/types/device.ts).</summary>
 public record DeviceResponse(

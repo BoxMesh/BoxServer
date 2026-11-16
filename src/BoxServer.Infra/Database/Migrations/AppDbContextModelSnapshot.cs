@@ -87,6 +87,10 @@ namespace BoxServer.Infra.Database.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("Processes")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
                     b.Property<long>("RAM")
                         .HasColumnType("bigint");
 

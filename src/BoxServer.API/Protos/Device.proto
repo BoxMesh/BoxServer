@@ -27,6 +27,19 @@ message DeviceRequest {
     double disk_usage = 15;
     double net_in = 16;
     double net_out = 17;
+    // The busiest processes now, busiest first.
+    repeated DeviceProcess processes = 18;
+}
+
+message DeviceProcess {
+    int32 pid = 1;
+    string name = 2;
+    string user = 3;
+    // running, suspended or not-responding
+    string status = 4;
+    // Percent of the whole machine.
+    double cpu = 5;
+    double memory_mb = 6;
 }
 
 message DeviceResponse {
