@@ -7,11 +7,16 @@ using BoxServer.Infra.Service;
 
 public class GDeviceService(DeviceService deviceService) : DeviceGRPC.DeviceGRPCBase
 {
+    // shortcut: any caller that can reach the port may report; check an enrollment token once agents enroll.
     public override async Task<DeviceResponse> Ping(DeviceRequest device,ServerCallContext context)
     {
+        if (!Guid.TryParse(device.Id, out Guid id) || string.IsNullOrWhiteSpace(device.HostName))
+        {
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "id must be a UUID and host_name must be set"));
+        }
         Device? dPing = await deviceService.Ping(new Device
         {
-            Id = Guid.Parse(device.Id),
+            Id = id,
             Hostname=device.HostName,
             OSName=device.OsName,
             OSVersion=device.OsVersion,
@@ -21,13 +26,14 @@ public class GDeviceService(DeviceService deviceService) : DeviceGRPC.DeviceGRPC
             CPU=device.Cpu,
             RAM=device.Ram,
             Disk=device.Disk,
-            Uptime=device.Uptime
+            Uptime=device.Uptime,
+            AgentVersion=device.AgentVersion,
+            CpuUsage=device.CpuUsage,
+            RamUsage=device.RamUsage,
+            DiskUsage=device.DiskUsage,
+            NetIn=device.NetIn,
+            NetOut=device.NetOut,
         });
-        Any Data = Any.Pack(new BoolValue { Value = false });
-        if (dPing != null)
-        {
-            Data = Any.Pack(new BoolValue { Value = false });
-        };
-        return new DeviceResponse{Data = Data};
+        return new DeviceResponse{Data = Any.Pack(new BoolValue { Value = dPing != null })};
     }
 }

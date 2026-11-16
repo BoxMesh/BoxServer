@@ -3,6 +3,8 @@ syntax = "proto3";
 import "google/protobuf/any.proto";
 
 option csharp_namespace = "BoxServer.API.GRPC";
+// Kept identical to BoxAgent/proto/device.proto; change both together.
+option go_package = "boxagent/internal/pb";
 
 package device;
 
@@ -18,6 +20,13 @@ message DeviceRequest {
     int64 ram = 9;
     int64 disk = 10;
     int64 uptime = 11;
+    string agent_version = 12;
+    // Usage in percent; network in Mbps since the agent's previous report.
+    double cpu_usage = 13;
+    double ram_usage = 14;
+    double disk_usage = 15;
+    double net_in = 16;
+    double net_out = 17;
 }
 
 message DeviceResponse {

@@ -12,4 +12,11 @@ public class Device : IBase
     public long RAM { get; set; } = 0;
     public long Disk { get; set; } = 0;
     public long Uptime { get; set; } = 0;
+    public string AgentVersion { get; set; } = string.Empty;
+    // Latest report only, in percent and Mbps; no history is kept yet.
+    public double CpuUsage { get; set; } = 0;
+    public double RamUsage { get; set; } = 0;
+    public double DiskUsage { get; set; } = 0;
+    public double NetIn { get; set; } = 0;
+    public double NetOut { get; set; } = 0;
 }

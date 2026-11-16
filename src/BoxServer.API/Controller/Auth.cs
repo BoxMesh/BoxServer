@@ -10,6 +10,7 @@ public class AuthController(
     JWTSecret jwtSecret
 ) : ControllerBase
 {
+    /// <summary>For API clients: returns the tokens to send as a Bearer header.</summary>
     [HttpPost("/sign-in")]
     public async Task<ActionResult<SignInResponse>> signIn([FromBody] SignInRequest signInRequest)
     {
@@ -20,7 +21,28 @@ public class AuthController(
         }
         return Ok(new SignInResponse(
             jwtSecret.GenerateAccessToken(user),
-            jwtSecret.GenerateAccessToken(user)
+            jwtSecret.GenerateRefreshToken(user)
         ));
+    }
+
+    /// <summary>For the web console: sets the session cookie and returns the account.</summary>
+    [HttpPost("/log-in")]
+    public async Task<ActionResult<AccountResponse>> LogIn([FromBody] SignInRequest request)
+    {
+        User? user = await userService.SignIn(request.Email, request.Password);
+        if (user == null)
+        {
+            return Unauthorized();
+        }
+        jwtSecret.SetSessionCookie(Response, user);
+        // shortcut: accounts only come from `create-admin`, so every one is an Admin; store a role once Operators can be created.
+        return Ok(new AccountResponse(user.Id, user.Email, "Admin"));
+    }
+
+    [HttpPost("/log-out")]
+    public IActionResult LogOut()
+    {
+        JWTSecret.ClearSessionCookie(Response);
+        return NoContent();
     }
 }

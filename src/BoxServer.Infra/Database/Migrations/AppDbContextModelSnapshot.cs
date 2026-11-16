@@ -28,10 +28,17 @@ namespace BoxServer.Infra.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("AgentVersion")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("CPU")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
+
+                    b.Property<double>("CpuUsage")
+                        .HasColumnType("double precision");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -41,6 +48,9 @@ namespace BoxServer.Infra.Database.Migrations
 
                     b.Property<long>("Disk")
                         .HasColumnType("bigint");
+
+                    b.Property<double>("DiskUsage")
+                        .HasColumnType("double precision");
 
                     b.Property<string>("Hostname")
                         .IsRequired()
@@ -55,6 +65,12 @@ namespace BoxServer.Infra.Database.Migrations
                         .IsRequired()
                         .HasMaxLength(17)
                         .HasColumnType("character varying(17)");
+
+                    b.Property<double>("NetIn")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("NetOut")
+                        .HasColumnType("double precision");
 
                     b.Property<string>("OSArchitecture")
                         .IsRequired()
@@ -74,6 +90,9 @@ namespace BoxServer.Infra.Database.Migrations
                     b.Property<long>("RAM")
                         .HasColumnType("bigint");
 
+                    b.Property<double>("RamUsage")
+                        .HasColumnType("double precision");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -86,6 +105,42 @@ namespace BoxServer.Infra.Database.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Device", (string)null);
+                });
+
+            modelBuilder.Entity("BoxServer.Infra.Database.Entities.DeviceMetric", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("At")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<double>("Cpu")
+                        .HasColumnType("double precision");
+
+                    b.Property<Guid>("DeviceId")
+                        .HasColumnType("uuid");
+
+                    b.Property<double>("Disk")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("NetIn")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("NetOut")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Ram")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DeviceId", "At");
+
+                    b.ToTable("DeviceMetric", (string)null);
                 });
 
             modelBuilder.Entity("BoxServer.Infra.Database.Entities.User", b =>
@@ -122,6 +177,15 @@ namespace BoxServer.Infra.Database.Migrations
                         .IsUnique();
 
                     b.ToTable("User", (string)null);
+                });
+
+            modelBuilder.Entity("BoxServer.Infra.Database.Entities.DeviceMetric", b =>
+                {
+                    b.HasOne("BoxServer.Infra.Database.Entities.Device", null)
+                        .WithMany()
+                        .HasForeignKey("DeviceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

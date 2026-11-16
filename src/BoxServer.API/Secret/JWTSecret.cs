@@ -9,6 +9,9 @@ namespace BoxServer.API.Secret;
 
 public class JWTSecret(IConfiguration configuration)
 {
+    public const string SessionCookie = "session";
+    private static readonly TimeSpan SessionLifetime = TimeSpan.FromHours(8);
+
     private SigningCredentials GetSigningCredentials()
     {
         string secretKey = configuration["Jwt:SecretKey"]!;
@@ -22,26 +25,34 @@ public class JWTSecret(IConfiguration configuration)
         claims.Add("email", user.Email);
         return claims;
     }
-    public string GenerateAccessToken(User user)
+    private string CreateToken(User user, TimeSpan lifetime)
     {
         return new JsonWebTokenHandler().CreateToken(new SecurityTokenDescriptor
         {
             Issuer = configuration["Jwt:Issuer"],
             Audience = configuration["Jwt:Audience"],
             Claims = GenerateClaims(user),
-            Expires = DateTime.Now.AddMinutes(15),
+            Expires = DateTime.UtcNow.Add(lifetime),
             SigningCredentials = GetSigningCredentials(),
         });
     }
-    public string GenerateRefreshToken(User user)
+    public string GenerateAccessToken(User user) => CreateToken(user, TimeSpan.FromMinutes(15));
+    public string GenerateRefreshToken(User user) => CreateToken(user, TimeSpan.FromDays(7));
+
+    public void SetSessionCookie(HttpResponse response, User user)
     {
-        return new JsonWebTokenHandler().CreateToken(new SecurityTokenDescriptor
+        response.Cookies.Append(SessionCookie, CreateToken(user, SessionLifetime), new CookieOptions
         {
-            Issuer = configuration["Jwt:Issuer"],
-            Audience = configuration["Jwt:Audience"],
-            Claims = GenerateClaims(user),
-            Expires = DateTime.Now.AddDays(7),
-            SigningCredentials = GetSigningCredentials(),
+            HttpOnly = true,
+            SameSite = SameSiteMode.Strict,
+            Path = "/",
+            MaxAge = SessionLifetime,
+            Secure = response.HttpContext.Request.IsHttps,
         });
+    }
+
+    public static void ClearSessionCookie(HttpResponse response)
+    {
+        response.Cookies.Delete(SessionCookie, new CookieOptions { Path = "/" });
     }
 }

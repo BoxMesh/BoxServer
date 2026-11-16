@@ -40,7 +40,7 @@ public class BaseRepository<T>(DBContext _dbContext) : IBaseRepository<T> where 
     }
     public async Task<T?> Update(Guid ID, T Entity)
     {
-        T? record = await FindBy("ID", ID);
+        T? record = await FindByID(ID);
         if (record == null) 
         {
             return null;
@@ -51,7 +51,7 @@ public class BaseRepository<T>(DBContext _dbContext) : IBaseRepository<T> where 
     }
     public async Task<T?> Delete(Guid ID)
     {
-        T? record = await FindBy("ID", ID);
+        T? record = await FindByID(ID);
         if (record == null)
         {
             return null;

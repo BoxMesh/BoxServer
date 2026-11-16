@@ -14,6 +14,7 @@ public partial class Program
         builder.Services.AddGrpc();
         builder.Services.AddScoped<JWTSecret>();
         builder.Services.AddInfrastructure(builder.Configuration);
+        builder.Services.AddHostedService<MetricRetention>();
         builder.Services.AddOpenApi(options =>
         {
             options.AddDocumentTransformer((document, context, cancellationToken) =>
@@ -70,6 +71,12 @@ public partial class Program
                 };
                 options.Events = new JwtBearerEvents
                 {
+                    // The web console authenticates with the session cookie; without it the Bearer header is read as before.
+                    OnMessageReceived = context =>
+                    {
+                        context.Token = context.Request.Cookies[JWTSecret.SessionCookie];
+                        return Task.CompletedTask;
+                    },
                     OnChallenge = async (context) =>
                     {
                         context.HandleResponse();
