@@ -22,10 +22,10 @@ public static class AccountRules
         password == null || password.Length < MinPassword ? $"password must be at least {MinPassword} characters" : null;
 }
 
-/// <summary>POST /users. Role is optional and can only be Operator: there is one Admin.</summary>
+/// <summary>POST /users. Role is optional and can only be User: there is one System account.</summary>
 public record CreateUserRequest(string? Name, string? Email, string? Password, string? Role);
 
-/// <summary>What an Operator may see: every device in these groups, and these single devices. Null means none.</summary>
+/// <summary>What a User may see: every device in these groups, and these single devices. Null means none.</summary>
 public record UserAccess(Guid[]? GroupIds, Guid[]? DeviceIds)
 {
     public static UserAccess From(UserAccessIds? ids) => new(ids?.GroupIds ?? [], ids?.DeviceIds ?? []);

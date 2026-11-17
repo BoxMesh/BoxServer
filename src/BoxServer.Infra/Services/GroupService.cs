@@ -12,7 +12,6 @@ public class GroupService(GroupRepository groupRepository)
     }
 
     public async Task<Group?> GetById(Guid id) => await groupRepository.FindByID(id);
-
     /// <summary>Creates the group; null when the name is already taken.</summary>
     public async Task<Group?> Create(string name)
     {

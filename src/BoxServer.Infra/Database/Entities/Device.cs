@@ -3,7 +3,7 @@ namespace BoxServer.Infra.Database.Entities;
 public class Device : IBase
 {
     public string Hostname { get; set; } = string.Empty;
-    /// <summary>A name an Admin gives the device in the console; hostnames can repeat, the device ID never does.</summary>
+    /// <summary>A name a System account gives the device in the console; hostnames can repeat, the device ID never does.</summary>
     public string Alias { get; set; } = string.Empty;
     public string OSName { get; set; } = string.Empty;
     public string OSVersion { get; set; } = string.Empty;

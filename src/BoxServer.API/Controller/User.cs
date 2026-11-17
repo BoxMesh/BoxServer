@@ -5,9 +5,9 @@ using BoxServer.Infra.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-// Only an Admin manages accounts. An account edits itself through PATCH /account.
+// Only a System account manages accounts. An account edits itself through PATCH /account.
 [ApiController]
-[Authorize(Roles = Roles.Admin)]
+[Authorize(Roles = Roles.System)]
 [Route("/users")]
 public class UserController(UserService userService, AccessService accessService) : ControllerBase
 {
@@ -29,22 +29,22 @@ public class UserController(UserService userService, AccessService accessService
         return user == null ? NotFound() : Ok(UserResponse.From(user, await accessService.AccessOf(id)));
     }
 
-    /// <summary>Creates the account outright: the Admin sets the password and no email is sent. Access is granted afterwards.</summary>
+    /// <summary>Creates the account outright: the System account sets the password and no email is sent. Access is granted afterwards.</summary>
     [HttpPost]
     public async Task<ActionResult<UserResponse>> CreateUser([FromBody] CreateUserRequest request)
     {
         string name = (request.Name ?? "").Trim();
         string email = (request.Email ?? "").Trim();
         string? error = AccountRules.NameError(name) ?? AccountRules.EmailError(email) ?? AccountRules.PasswordError(request.Password);
-        if (error == null && (request.Role ?? Roles.Operator) != Roles.Operator)
+        if (error == null && (request.Role ?? Roles.User) != Roles.User)
         {
-            error = "role must be Operator: there is one Admin";
+            error = "role must be User: there is one System account";
         }
         if (error != null)
         {
             return BadRequest(error);
         }
-        User? user = await userService.Create(name, email, request.Password!, Roles.Operator);
+        User? user = await userService.Create(name, email, request.Password!, Roles.User);
         return user == null ? Conflict("an account with this email already exists") : Ok(UserResponse.From(user, null));
     }
 

@@ -33,6 +33,9 @@ public static class DependencyInjection
 
         services.AddScoped<GroupService>();
         services.AddScoped<GroupRepository>();
+
+        services.AddScoped<EnrollmentTokenService>();
+        services.AddScoped<EnrollmentTokenRepository>();
         return services;
     }
 

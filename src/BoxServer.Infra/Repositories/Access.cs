@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BoxServer.Infra.Repository;
 
-/// <summary>What an Operator was granted: whole groups and single devices.</summary>
+/// <summary>What a User was granted: whole groups and single devices.</summary>
 public record UserAccessIds(Guid[] GroupIds, Guid[] DeviceIds);
 
 public class AccessRepository(DBContext _context)

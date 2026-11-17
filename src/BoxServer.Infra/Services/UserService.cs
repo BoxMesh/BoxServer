@@ -9,13 +9,13 @@ namespace BoxServer.Infra.Service
         PasswordHasher<User> hasher
     )
     {
-        /// <summary>Creates an Admin; the only way to make an account today.</summary>
+        /// <summary>Creates a System account; the only way to make an account today.</summary>
         public async Task<User> SignUp(string Email, string Password)
         {
             User user = new User
             {
                 Email = Email,
-                Role = Roles.Admin,
+                Role = Roles.System,
             };
             user.Password = hasher.HashPassword(user,Password);
             return await userRepository.Create(user);

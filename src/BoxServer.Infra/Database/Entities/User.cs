@@ -2,8 +2,8 @@ namespace BoxServer.Infra.Database.Entities;
 
 public static class Roles
 {
-    public const string Admin = "Admin";
-    public const string Operator = "Operator";
+    public const string System = "System";
+    public const string User = "User";
 }
 
 public class User : IBase
@@ -14,6 +14,6 @@ public class User : IBase
     /// <summary>A disabled account cannot sign in.</summary>
     public bool Disabled { get; set; } = false;
     public DateTime? LastSignIn { get; set; } = null;
-    /// <summary>Roles.Admin or Roles.Operator; accounts made without a role can only look.</summary>
-    public string Role { get; set; } = Roles.Operator;
+    /// <summary>Roles.System or Roles.User; accounts made without a role are Users.</summary>
+    public string Role { get; set; } = Roles.User;
 }
