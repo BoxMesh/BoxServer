@@ -35,8 +35,7 @@ public class AuthController(
             return Unauthorized();
         }
         jwtSecret.SetSessionCookie(Response, user);
-        // shortcut: accounts only come from `create-admin`, so every one is an Admin; store a role once Operators can be created.
-        return Ok(new AccountResponse(user.Id, user.Email, "Admin"));
+        return Ok(new AccountResponse(user.Id, user.Email, user.Role));
     }
 
     [HttpPost("/log-out")]

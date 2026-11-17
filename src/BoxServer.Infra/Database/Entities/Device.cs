@@ -21,6 +21,6 @@ public class Device : IBase
     public double DiskUsage { get; set; } = 0;
     public double NetIn { get; set; } = 0;
     public double NetOut { get; set; } = 0;
-    /// <summary>The busiest processes at the latest report, as a JSON array; replaced on every report.</summary>
+    /// <summary>Every process at the latest report, busiest first, as a JSON array; replaced on every report.</summary>
     public string Processes { get; set; } = "[]";
 }

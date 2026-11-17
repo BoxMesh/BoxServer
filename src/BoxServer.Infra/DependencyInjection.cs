@@ -27,6 +27,12 @@ public static class DependencyInjection
         services.AddScoped<DeviceService>();
         services.AddScoped<DeviceRepository>();
         services.AddScoped<DeviceMetricRepository>();
+
+        services.AddScoped<AccessService>();
+        services.AddScoped<AccessRepository>();
+
+        services.AddScoped<GroupService>();
+        services.AddScoped<GroupRepository>();
         return services;
     }
 

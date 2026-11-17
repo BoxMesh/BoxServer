@@ -10,6 +10,7 @@ namespace BoxServer.API.Secret;
 public class JWTSecret(IConfiguration configuration)
 {
     public const string SessionCookie = "session";
+    public const string RoleClaim = "role";
     private static readonly TimeSpan SessionLifetime = TimeSpan.FromHours(8);
 
     private SigningCredentials GetSigningCredentials()
@@ -23,6 +24,7 @@ public class JWTSecret(IConfiguration configuration)
         Dictionary<string, object> claims = new Dictionary<string, object>();
         claims.Add("id", user.Id);
         claims.Add("email", user.Email);
+        claims.Add(RoleClaim, user.Role);
         return claims;
     }
     private string CreateToken(User user, TimeSpan lifetime)

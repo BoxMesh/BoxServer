@@ -116,6 +116,21 @@ namespace BoxServer.Infra.Database.Migrations
                     b.ToTable("Device", (string)null);
                 });
 
+            modelBuilder.Entity("BoxServer.Infra.Database.Entities.DeviceGroup", b =>
+                {
+                    b.Property<Guid>("DeviceId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("DeviceId", "GroupId");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("DeviceGroup", (string)null);
+                });
+
             modelBuilder.Entity("BoxServer.Infra.Database.Entities.DeviceMetric", b =>
                 {
                     b.Property<long>("Id")
@@ -152,6 +167,37 @@ namespace BoxServer.Infra.Database.Migrations
                     b.ToTable("DeviceMetric", (string)null);
                 });
 
+            modelBuilder.Entity("BoxServer.Infra.Database.Entities.Group", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Group", (string)null);
+                });
+
             modelBuilder.Entity("BoxServer.Infra.Database.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -164,15 +210,31 @@ namespace BoxServer.Infra.Database.Migrations
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("Disabled")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
+                    b.Property<DateTime?>("LastSignIn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -188,11 +250,86 @@ namespace BoxServer.Infra.Database.Migrations
                     b.ToTable("User", (string)null);
                 });
 
+            modelBuilder.Entity("BoxServer.Infra.Database.Entities.UserDeviceAccess", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("DeviceId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("UserId", "DeviceId");
+
+                    b.HasIndex("DeviceId");
+
+                    b.ToTable("UserDeviceAccess", (string)null);
+                });
+
+            modelBuilder.Entity("BoxServer.Infra.Database.Entities.UserGroupAccess", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("UserId", "GroupId");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("UserGroupAccess", (string)null);
+                });
+
+            modelBuilder.Entity("BoxServer.Infra.Database.Entities.DeviceGroup", b =>
+                {
+                    b.HasOne("BoxServer.Infra.Database.Entities.Device", null)
+                        .WithMany()
+                        .HasForeignKey("DeviceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BoxServer.Infra.Database.Entities.Group", null)
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("BoxServer.Infra.Database.Entities.DeviceMetric", b =>
                 {
                     b.HasOne("BoxServer.Infra.Database.Entities.Device", null)
                         .WithMany()
                         .HasForeignKey("DeviceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BoxServer.Infra.Database.Entities.UserDeviceAccess", b =>
+                {
+                    b.HasOne("BoxServer.Infra.Database.Entities.Device", null)
+                        .WithMany()
+                        .HasForeignKey("DeviceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BoxServer.Infra.Database.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BoxServer.Infra.Database.Entities.UserGroupAccess", b =>
+                {
+                    b.HasOne("BoxServer.Infra.Database.Entities.Group", null)
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BoxServer.Infra.Database.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

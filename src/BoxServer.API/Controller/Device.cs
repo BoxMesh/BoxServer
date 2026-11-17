@@ -7,25 +7,43 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // Devices are addressed by their agent's ID: hostnames can repeat. An ID that isn't a UUID matches no route (404).
+// An Admin sees every device; an Operator only the ones granted to them, and any other device is a 404 for them.
 [ApiController]
 [Authorize]
 [Route("/devices")]
-public class RPCDeviceController(DeviceService deviceService) : ControllerBase
+public class DeviceController(DeviceService deviceService, AccessService accessService) : ControllerBase
 {
     private const int MaxAlias = 100;
+
+    // Each range is cut into as many points as BoxMesh's Performance chart draws: 60, 96 and 168.
+    private static readonly Dictionary<string, (TimeSpan Span, TimeSpan Step)> Ranges = new()
+    {
+        ["1h"] = (TimeSpan.FromHours(1), TimeSpan.FromMinutes(1)),
+        ["24h"] = (TimeSpan.FromHours(24), TimeSpan.FromMinutes(15)),
+        ["7d"] = (TimeSpan.FromDays(7), TimeSpan.FromHours(1)),
+    };
+
+    // The signed-in account's ID; an empty one matches no grant.
+    private Guid Me => Guid.TryParse(User.FindFirst("id")?.Value, out Guid me) ? me : Guid.Empty;
+
+    private async Task<bool> CanSee(Guid deviceId) => User.IsInRole(Roles.Admin) || await accessService.CanSee(Me, deviceId);
+
+    // The device, or null when it does not exist or the caller may not see it.
+    private async Task<Device?> VisibleDevice(Guid id) => await CanSee(id) ? await deviceService.GetById(id) : null;
 
     [HttpGet()]
     public async Task<ActionResult<List<DeviceResponse>>> GetDevices()
     {
-        List<Device> devices = await deviceService.GetDevices();
-        return Ok(devices.Select(DeviceResponse.From).ToList());
+        List<Device> devices = User.IsInRole(Roles.Admin) ? await deviceService.GetDevices() : await accessService.DevicesFor(Me);
+        Dictionary<Guid, Guid[]> groups = await accessService.GroupIdsByDevice();
+        return Ok(devices.Select(d => DeviceResponse.From(d, groups.GetValueOrDefault(d.Id, []))).ToList());
     }
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<DeviceResponse>> GetDevice(Guid id)
     {
-        Device? device = await deviceService.GetById(id);
-        return device == null ? NotFound() : Ok(DeviceResponse.From(device));
+        Device? device = await VisibleDevice(id);
+        return device == null ? NotFound() : Ok(DeviceResponse.From(device, await accessService.GroupIdsOf(id)));
     }
 
     /// <summary>Sets the device's alias; an empty one clears it.</summary>
@@ -37,17 +55,32 @@ public class RPCDeviceController(DeviceService deviceService) : ControllerBase
         {
             return BadRequest($"alias must be at most {MaxAlias} characters");
         }
+        if (!await CanSee(id))
+        {
+            return NotFound();
+        }
         Device? device = await deviceService.SetAlias(id, alias);
-        return device == null ? NotFound() : Ok(DeviceResponse.From(device));
+        return device == null ? NotFound() : Ok(DeviceResponse.From(device, await accessService.GroupIdsOf(id)));
     }
 
-    // Each range is cut into as many points as BoxMesh's Performance chart draws: 60, 96 and 168.
-    private static readonly Dictionary<string, (TimeSpan Span, TimeSpan Step)> Ranges = new()
+    /// <summary>Puts the device in exactly these groups. Only an Admin.</summary>
+    [Authorize(Roles = Roles.Admin)]
+    [HttpPut("{id:guid}/groups")]
+    public async Task<ActionResult<DeviceResponse>> SetGroups(Guid id, [FromBody] SetDeviceGroupsRequest request)
     {
-        ["1h"] = (TimeSpan.FromHours(1), TimeSpan.FromMinutes(1)),
-        ["24h"] = (TimeSpan.FromHours(24), TimeSpan.FromMinutes(15)),
-        ["7d"] = (TimeSpan.FromDays(7), TimeSpan.FromHours(1)),
-    };
+        Guid[] groupIds = request.GroupIds ?? [];
+        Device? device = await deviceService.GetById(id);
+        if (device == null)
+        {
+            return NotFound();
+        }
+        if (!await accessService.AllExist(groupIds, []))
+        {
+            return BadRequest("unknown group");
+        }
+        await accessService.SetDeviceGroups(id, groupIds);
+        return Ok(DeviceResponse.From(device, await accessService.GroupIdsOf(id)));
+    }
 
     [HttpGet("{id:guid}/metrics")]
     public async Task<ActionResult<List<MetricPoint>>> GetMetrics(Guid id, [FromQuery] string range = "24h")
@@ -56,7 +89,7 @@ public class RPCDeviceController(DeviceService deviceService) : ControllerBase
         {
             return BadRequest("range must be 1h, 24h or 7d");
         }
-        Device? device = await deviceService.GetById(id);
+        Device? device = await VisibleDevice(id);
         if (device == null)
         {
             return NotFound();
@@ -64,11 +97,11 @@ public class RPCDeviceController(DeviceService deviceService) : ControllerBase
         return Ok(await deviceService.GetMetrics(device.Id, DateTime.UtcNow - r.Span, r.Step));
     }
 
-    /// <summary>The busiest processes at the agent's latest report.</summary>
+    /// <summary>Every process at the agent's latest report, busiest first.</summary>
     [HttpGet("{id:guid}/processes")]
     public async Task<ActionResult<List<ProcessResponse>>> GetProcesses(Guid id)
     {
-        Device? device = await deviceService.GetById(id);
+        Device? device = await VisibleDevice(id);
         return device == null ? NotFound() : Ok(ProcessResponse.FromJson(device.Processes));
     }
 }

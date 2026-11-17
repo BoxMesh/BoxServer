@@ -71,11 +71,16 @@ public partial class Program
                 };
                 options.Events = new JwtBearerEvents
                 {
-                    // The web console authenticates with the session cookie; without it the Bearer header is read as before.
                     OnMessageReceived = context =>
                     {
                         context.Token = context.Request.Cookies[JWTSecret.SessionCookie];
                         return Task.CompletedTask;
+                    },
+                    OnForbidden = async (context) =>
+                    {
+                        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                        context.Response.ContentType = "application/json";
+                        await context.Response.WriteAsJsonAsync(new { error = "Forbidden" });
                     },
                     OnChallenge = async (context) =>
                     {
