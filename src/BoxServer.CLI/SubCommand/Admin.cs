@@ -7,7 +7,7 @@ namespace Zin.CLI.Subcommand.Admin
     {
         public static Command command(UserService _userService)
         {
-            Command command = new("create-admin", "Tạo tài khoản admin");
+            Command command = new("create-admin", "Tạo tài khoản System");
             Option<string> email = new("--email")
             {
                 Description = "Email",

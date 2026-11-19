@@ -167,7 +167,48 @@ namespace Zin.Infra.Database.Migrations
                     b.ToTable("DeviceMetric", (string)null);
                 });
 
+<<<<<<< HEAD
             modelBuilder.Entity("Zin.Infra.Database.Entities.Group", b =>
+=======
+            modelBuilder.Entity("BoxServer.Infra.Database.Entities.EnrollmentToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("MaxDevices")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Token")
+                        .IsUnique();
+
+                    b.ToTable("EnrollmentToken", (string)null);
+                });
+
+            modelBuilder.Entity("BoxServer.Infra.Database.Entities.Group", b =>
+>>>>>>> 65f75d90a185857fa45e93f12ee77297c18b648b
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

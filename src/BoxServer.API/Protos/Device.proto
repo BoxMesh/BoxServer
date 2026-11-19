@@ -33,9 +33,7 @@ message DeviceProcess {
     int32 pid = 1;
     string name = 2;
     string user = 3;
-    // running, suspended or not-responding
     string status = 4;
-    // Percent of the whole machine.
     double cpu = 5;
     double memory_mb = 6;
 }

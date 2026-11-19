@@ -6,8 +6,6 @@ using Zin.Infra.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-// Devices are addressed by their agent's ID: hostnames can repeat. An ID that isn't a UUID matches no route (404).
-// An Admin sees every device; an Operator only the ones granted to them, and any other device is a 404 for them.
 [ApiController]
 [Authorize]
 [Route("/devices")]
@@ -26,7 +24,7 @@ public class DeviceController(DeviceService deviceService, AccessService accessS
     // The signed-in account's ID; an empty one matches no grant.
     private Guid Me => Guid.TryParse(User.FindFirst("id")?.Value, out Guid me) ? me : Guid.Empty;
 
-    private async Task<bool> CanSee(Guid deviceId) => User.IsInRole(Roles.Admin) || await accessService.CanSee(Me, deviceId);
+    private async Task<bool> CanSee(Guid deviceId) => User.IsInRole(Roles.System) || await accessService.CanSee(Me, deviceId);
 
     // The device, or null when it does not exist or the caller may not see it.
     private async Task<Device?> VisibleDevice(Guid id) => await CanSee(id) ? await deviceService.GetById(id) : null;
@@ -34,7 +32,7 @@ public class DeviceController(DeviceService deviceService, AccessService accessS
     [HttpGet()]
     public async Task<ActionResult<List<DeviceResponse>>> GetDevices()
     {
-        List<Device> devices = User.IsInRole(Roles.Admin) ? await deviceService.GetDevices() : await accessService.DevicesFor(Me);
+        List<Device> devices = User.IsInRole(Roles.System) ? await deviceService.GetDevices() : await accessService.DevicesFor(Me);
         Dictionary<Guid, Guid[]> groups = await accessService.GroupIdsByDevice();
         return Ok(devices.Select(d => DeviceResponse.From(d, groups.GetValueOrDefault(d.Id, []))).ToList());
     }
@@ -63,8 +61,7 @@ public class DeviceController(DeviceService deviceService, AccessService accessS
         return device == null ? NotFound() : Ok(DeviceResponse.From(device, await accessService.GroupIdsOf(id)));
     }
 
-    /// <summary>Puts the device in exactly these groups. Only an Admin.</summary>
-    [Authorize(Roles = Roles.Admin)]
+    [Authorize(Roles = Roles.System)]
     [HttpPut("{id:guid}/groups")]
     public async Task<ActionResult<DeviceResponse>> SetGroups(Guid id, [FromBody] SetDeviceGroupsRequest request)
     {
@@ -97,7 +94,6 @@ public class DeviceController(DeviceService deviceService, AccessService accessS
         return Ok(await deviceService.GetMetrics(device.Id, DateTime.UtcNow - r.Span, r.Step));
     }
 
-    /// <summary>Every process at the agent's latest report, busiest first.</summary>
     [HttpGet("{id:guid}/processes")]
     public async Task<ActionResult<List<ProcessResponse>>> GetProcesses(Guid id)
     {
