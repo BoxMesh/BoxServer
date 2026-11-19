@@ -1,9 +1,9 @@
-using BoxServer.API.Response;
+using Zin.API.Response;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace BoxServer.API.Filter
+namespace Zin.API.Filter
 {
     public class ResponseFilter : IAsyncAlwaysRunResultFilter
     {

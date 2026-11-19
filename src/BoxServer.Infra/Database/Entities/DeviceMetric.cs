@@ -1,4 +1,4 @@
-namespace BoxServer.Infra.Database.Entities;
+namespace Zin.Infra.Database.Entities;
 
 /// <summary>One usage sample from a device's agent, for the Performance charts. Kept 7 days.</summary>
 // Not an IBase: a high-volume table gets a bigint key and none of the audit columns.

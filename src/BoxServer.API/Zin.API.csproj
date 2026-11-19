@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BoxServer.Infra\BoxServer.Infra.csproj" />
+    <ProjectReference Include="..\Zin.Infra\Zin.Infra.csproj" />
     <Protobuf Include="Protos\Device.proto" GrpcServices="Server" />
   </ItemGroup>
 

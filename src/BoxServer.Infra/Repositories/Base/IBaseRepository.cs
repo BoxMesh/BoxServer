@@ -1,5 +1,5 @@
 
-using BoxServer.Infra.Database.Entities;
+using Zin.Infra.Database.Entities;
 
 public interface IBaseRepository<T> where T : IBase
 {

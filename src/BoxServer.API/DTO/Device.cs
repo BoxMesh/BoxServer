@@ -1,8 +1,8 @@
 using System.Text.Json;
 
-using BoxServer.Infra.Database.Entities;
+using Zin.Infra.Database.Entities;
 
-namespace BoxServer.API.DTO.Devices;
+namespace Zin.API.DTO.Devices;
 
 public record DeviceHardware(string Cpu, string Ram, string Disk, string Uptime);
 

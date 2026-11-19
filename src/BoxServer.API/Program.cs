@@ -1,7 +1,7 @@
 using System.Text;
-using BoxServer.API.Filter;
-using BoxServer.API.Secret;
-using BoxServer.Infra;
+using Zin.API.Filter;
+using Zin.API.Secret;
+using Zin.Infra;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;

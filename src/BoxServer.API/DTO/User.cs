@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 
-using BoxServer.Infra.Database.Entities;
-using BoxServer.Infra.Repository;
+using Zin.Infra.Database.Entities;
+using Zin.Infra.Repository;
 
-namespace BoxServer.API.DTO.Users;
+namespace Zin.API.DTO.Users;
 
 /// <summary>The limits on an account's fields, shared by every endpoint that sets them.</summary>
 public static class AccountRules

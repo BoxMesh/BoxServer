@@ -1,7 +1,7 @@
-using BoxServer.API.DTO.Devices;
-using BoxServer.Infra.Database.Entities;
-using BoxServer.Infra.Repository;
-using BoxServer.Infra.Service;
+using Zin.API.DTO.Devices;
+using Zin.Infra.Database.Entities;
+using Zin.Infra.Repository;
+using Zin.Infra.Service;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -1,14 +1,14 @@
-using BoxServer.Infra.Database.Context;
-using BoxServer.Infra.Database.Entities;
-using BoxServer.Infra.Repository;
-using BoxServer.Infra.Service;
+using Zin.Infra.Database.Context;
+using Zin.Infra.Database.Entities;
+using Zin.Infra.Repository;
+using Zin.Infra.Service;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BoxServer.Infra;
+namespace Zin.Infra;
 
 public static class DependencyInjection
 {

@@ -1,4 +1,4 @@
-namespace BoxServer.Infra.Database.Entities;
+namespace Zin.Infra.Database.Entities;
 
 public class Device : IBase
 {

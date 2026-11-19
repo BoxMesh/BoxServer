@@ -1,7 +1,7 @@
-using BoxServer.Infra.Database.Context;
-using BoxServer.Infra.Database.Entities;
+using Zin.Infra.Database.Context;
+using Zin.Infra.Database.Entities;
 
-namespace BoxServer.Infra.Repository;
+namespace Zin.Infra.Repository;
  
 public class DeviceRepository(DBContext _context) : BaseRepository<Device>(_context)
 {

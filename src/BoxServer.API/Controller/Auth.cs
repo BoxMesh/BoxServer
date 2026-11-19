@@ -1,7 +1,7 @@
-using BoxServer.API.DTO.Auth;
-using BoxServer.API.Secret;
-using BoxServer.Infra.Database.Entities;
-using BoxServer.Infra.Service;
+using Zin.API.DTO.Auth;
+using Zin.API.Secret;
+using Zin.Infra.Database.Entities;
+using Zin.Infra.Service;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]

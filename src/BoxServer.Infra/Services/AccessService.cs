@@ -1,7 +1,7 @@
-using BoxServer.Infra.Database.Entities;
-using BoxServer.Infra.Repository;
+using Zin.Infra.Database.Entities;
+using Zin.Infra.Repository;
 
-namespace BoxServer.Infra.Service;
+namespace Zin.Infra.Service;
 
 /// <summary>Who may see which device: group membership of devices, and what each Operator was granted.</summary>
 public class AccessService(AccessRepository accessRepository)

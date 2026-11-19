@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace BoxServer.Infra.Database.Migrations
+namespace Zin.Infra.Database.Migrations
 {
     /// <inheritdoc />
     public partial class Groups : Migration

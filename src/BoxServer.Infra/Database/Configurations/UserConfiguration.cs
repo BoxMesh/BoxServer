@@ -1,9 +1,9 @@
-using BoxServer.Infra.Database.Entities;
+using Zin.Infra.Database.Entities;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BoxServer.Infra.Database.Configurations;
+namespace Zin.Infra.Database.Configurations;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {

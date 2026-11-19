@@ -1,9 +1,9 @@
-using BoxServer.API.Response;
+using Zin.API.Response;
 
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 
-namespace BoxServer.API.Filter
+namespace Zin.API.Filter
 {
     public class ExceptionFilter : IExceptionHandler
     {

@@ -1,11 +1,11 @@
 using System.Text;
 
-using BoxServer.Infra.Database.Entities;
+using Zin.Infra.Database.Entities;
 
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 
-namespace BoxServer.API.Secret;
+namespace Zin.API.Secret;
 
 public class JWTSecret(IConfiguration configuration)
 {

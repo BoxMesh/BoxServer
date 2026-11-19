@@ -1,10 +1,10 @@
 ﻿using System.CommandLine;
-using BoxServer.CLI.Subcommand.Admin;
+using Zin.CLI.Subcommand.Admin;
 using DotNetEnv;
-using BoxServer.Infra;
+using Zin.Infra;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using BoxServer.Infra.Service;
+using Zin.Infra.Service;
 
 public partial class Program
 {
@@ -17,7 +17,7 @@ public partial class Program
         ServiceCollection services = new ServiceCollection();
         services.AddInfrastructure(configuration);
         await using var provider = services.BuildServiceProvider();
-        RootCommand root = new("BoxServer CLI");
+        RootCommand root = new("Zin CLI");
 
         root.Subcommands.Add(Admin.command(provider.GetRequiredService<UserService>()));
         return await root.Parse(args).InvokeAsync();

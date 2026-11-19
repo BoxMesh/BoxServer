@@ -1,6 +1,6 @@
-using BoxServer.Infra.Database.Entities;
+using Zin.Infra.Database.Entities;
 
-namespace BoxServer.API.DTO.Groups;
+namespace Zin.API.DTO.Groups;
 
 /// <summary>POST and PATCH /groups: the group's name. Nullable so a missing name is our 400, not a model error.</summary>
 public record GroupRequest(string? Name);

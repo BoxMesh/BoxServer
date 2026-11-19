@@ -1,4 +1,4 @@
-namespace BoxServer.API.Response
+namespace Zin.API.Response
 {
     public class APIResponse<T>
     {

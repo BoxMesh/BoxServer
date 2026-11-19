@@ -1,9 +1,9 @@
-using BoxServer.Infra.Database.Entities;
-using BoxServer.Infra.Repository;
+using Zin.Infra.Database.Entities;
+using Zin.Infra.Repository;
 
 using Microsoft.AspNetCore.Http.Features;
 
-namespace BoxServer.Infra.Service
+namespace Zin.Infra.Service
 {
     public class DeviceService(DeviceRepository deviceRepository, DeviceMetricRepository metricRepository)
     {

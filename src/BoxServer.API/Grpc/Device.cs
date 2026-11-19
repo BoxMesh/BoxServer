@@ -1,11 +1,11 @@
-using BoxServer.API.GRPC;
+using Zin.API.GRPC;
 // Only this type: the DTO namespace has its own DeviceResponse, which would clash with the gRPC one.
-using ProcessResponse = BoxServer.API.DTO.Devices.ProcessResponse;
+using ProcessResponse = Zin.API.DTO.Devices.ProcessResponse;
 using Grpc.Core;
 
 using Google.Protobuf.WellKnownTypes;
-using BoxServer.Infra.Database.Entities;
-using BoxServer.Infra.Service;
+using Zin.Infra.Database.Entities;
+using Zin.Infra.Service;
 
 public class GDeviceService(DeviceService deviceService) : DeviceGRPC.DeviceGRPCBase
 {

@@ -1,4 +1,4 @@
-namespace BoxServer.Infra.Database.Entities;
+namespace Zin.Infra.Database.Entities;
 
 /// <summary>A device is in a group; a device can be in several.</summary>
 public class DeviceGroup

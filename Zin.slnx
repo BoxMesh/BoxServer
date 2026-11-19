@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Zin.API/Zin.API.csproj" />
+    <Project Path="src/Zin.CLI/Zin.CLI.csproj" />
+    <Project Path="src/Zin.Infra/Zin.Infra.csproj" />
+  </Folder>
+</Solution>

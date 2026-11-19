@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
-using BoxServer.Infra.Database.Context;
-using BoxServer.Infra.Database.Entities;
+using Zin.Infra.Database.Context;
+using Zin.Infra.Database.Entities;
 
 using Microsoft.EntityFrameworkCore;
 

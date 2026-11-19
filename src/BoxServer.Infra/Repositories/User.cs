@@ -1,9 +1,9 @@
-using BoxServer.Infra.Database.Context;
-using BoxServer.Infra.Database.Entities;
+using Zin.Infra.Database.Context;
+using Zin.Infra.Database.Entities;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace BoxServer.Infra.Repository;
+namespace Zin.Infra.Repository;
  
 public class UserRepository(DBContext _context) : BaseRepository<User>(_context)
 {

@@ -1,8 +1,8 @@
-using BoxServer.Infra.Database.Entities;
+using Zin.Infra.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BoxServer.Infra.Database.Configurations;
+namespace Zin.Infra.Database.Configurations;
 
 // Rows go away with either side: deleting a group, device or user cleans up its memberships and grants.
 public class DeviceGroupConfiguration : IEntityTypeConfiguration<DeviceGroup>

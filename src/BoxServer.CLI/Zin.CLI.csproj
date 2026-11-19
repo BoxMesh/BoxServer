@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BoxServer.Infra\BoxServer.Infra.csproj" />
+    <ProjectReference Include="..\Zin.Infra\Zin.Infra.csproj" />
   </ItemGroup>
 
   <ItemGroup>

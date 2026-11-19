@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "google/protobuf/any.proto";
 
-option csharp_namespace = "BoxServer.API.GRPC";
+option csharp_namespace = "Zin.API.GRPC";
 
 option go_package = "boxagent/internal/pb";
 

@@ -1,4 +1,4 @@
-namespace BoxServer.Infra.Database.Entities;
+namespace Zin.Infra.Database.Entities;
 
 /// <summary>A named set of devices. Membership is not stored yet.</summary>
 public class Group : IBase

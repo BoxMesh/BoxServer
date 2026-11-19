@@ -1,7 +1,7 @@
 using System.CommandLine;
-using BoxServer.Infra.Database.Entities;
-using BoxServer.Infra.Service;
-namespace BoxServer.CLI.Subcommand.Admin
+using Zin.Infra.Database.Entities;
+using Zin.Infra.Service;
+namespace Zin.CLI.Subcommand.Admin
 {
     public class Admin
     {

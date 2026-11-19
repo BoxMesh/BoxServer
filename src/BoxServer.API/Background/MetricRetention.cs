@@ -1,4 +1,4 @@
-using BoxServer.Infra.Repository;
+using Zin.Infra.Repository;
 
 /// <summary>Deletes usage samples older than the longest chart range, once an hour.</summary>
 public class MetricRetention(IServiceScopeFactory scopes, ILogger<MetricRetention> logger) : BackgroundService

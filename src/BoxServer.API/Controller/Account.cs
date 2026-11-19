@@ -1,6 +1,6 @@
-using BoxServer.API.DTO.Users;
-using BoxServer.Infra.Database.Entities;
-using BoxServer.Infra.Service;
+using Zin.API.DTO.Users;
+using Zin.Infra.Database.Entities;
+using Zin.Infra.Service;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

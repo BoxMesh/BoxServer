@@ -1,8 +1,8 @@
-using BoxServer.Infra.Database.Configurations;
+using Zin.Infra.Database.Configurations;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace BoxServer.Infra.Database.Context;
+namespace Zin.Infra.Database.Context;
 
 public class DBContext : DbContext
 {
