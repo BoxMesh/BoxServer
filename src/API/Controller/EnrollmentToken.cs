@@ -1,6 +1,6 @@
-using BoxServer.API.DTO.EnrollmentTokens;
-using BoxServer.Infra.Database.Entities;
-using BoxServer.Infra.Service;
+﻿using Zin.API.DTO.EnrollmentTokens;
+using Zin.Infra.Database.Entities;
+using Zin.Infra.Service;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

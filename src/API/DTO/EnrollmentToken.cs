@@ -1,6 +1,6 @@
-using BoxServer.Infra.Database.Entities;
+﻿using Zin.Infra.Database.Entities;
 
-namespace BoxServer.API.DTO.EnrollmentTokens;
+namespace Zin.API.DTO.EnrollmentTokens;
 
 /// <summary>POST /enrollment-tokens. Lifetime is 1h, 24h or 7d; MaxDevices is 1 to 1,000,000; leave it out for no limit.</summary>
 public record CreateEnrollmentTokenRequest(string? Lifetime, int? MaxDevices);

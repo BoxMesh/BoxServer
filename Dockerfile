@@ -4,15 +4,15 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 COPY dotnet-tools.json ./
 RUN dotnet tool restore
-COPY src/Zin.API/Zin.API.csproj src/Zin.API/
-COPY src/Zin.Infra/Zin.Infra.csproj src/Zin.Infra/
-RUN dotnet restore src/Zin.API/Zin.API.csproj
+COPY src/API/API.csproj src/API/
+COPY src/Infra/Infra.csproj src/Infra/
+RUN dotnet restore src/API/API.csproj
 COPY src/ src/
-RUN dotnet publish src/Zin.API/Zin.API.csproj -c Release -o /app --no-restore
+RUN dotnet publish src/API/API.csproj -c Release -o /app --no-restore
 
 RUN dotnet ef migrations bundle \
-      --project src/Zin.Infra \
-      --startup-project src/Zin.API \
+      --project src/Infra \
+      --startup-project src/API \
       --configuration Release \
       --output /app/efbundle
 
@@ -21,4 +21,4 @@ WORKDIR /app
 COPY --from=build /app .
 USER $APP_UID
 EXPOSE 8080 8081
-ENTRYPOINT ["/bin/sh", "-c", "./efbundle && exec dotnet Zin.API.dll"]
+ENTRYPOINT ["/bin/sh", "-c", "./efbundle && exec dotnet API.dll"]

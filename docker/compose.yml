@@ -6,8 +6,8 @@ services:
     restart: unless-stopped
     container_name: ZinPostgres
     environment:
-      POSTGRES_DB: 
-      POSTGRES_USER: 
+      POSTGRES_DB: zin
+      POSTGRES_USER: zin
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
     ports:
       - "5432:5432"

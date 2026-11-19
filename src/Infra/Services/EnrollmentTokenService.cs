@@ -1,9 +1,9 @@
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 
-using BoxServer.Infra.Database.Entities;
-using BoxServer.Infra.Repository;
+using Zin.Infra.Database.Entities;
+using Zin.Infra.Repository;
 
-namespace BoxServer.Infra.Service;
+namespace Zin.Infra.Service;
 
 public class EnrollmentTokenService(EnrollmentTokenRepository tokenRepository)
 {

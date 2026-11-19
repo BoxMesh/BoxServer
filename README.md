@@ -15,9 +15,9 @@ Exporter (each machine) ──gRPC──► Zin Server ◄──HTTPS── Port
 
 | Project | What it is |
 |---|---|
-| `src/Zin.API` | ASP.NET Core host: REST controllers, the gRPC `DeviceGRPC.Ping` service, JWT auth, OpenAPI |
-| `src/Zin.Infra` | EF Core (PostgreSQL), entities, migrations, repositories and services |
-| `src/Zin.CLI` | Command-line tool; `create-admin` makes the first System account |
+| `src/API` | ASP.NET Core host: REST controllers, the gRPC `DeviceGRPC.Ping` service, JWT auth, OpenAPI |
+| `src/Infra` | EF Core (PostgreSQL), entities, migrations, repositories and services |
+| `src/CLI` | Command-line tool; `create-admin` makes the first System account |
 
 Requires .NET 10 and PostgreSQL 18.
 
@@ -27,7 +27,7 @@ Requires .NET 10 and PostgreSQL 18.
 cp .env.example .env              # fill in the values below
 docker compose -f docker/compose.yml up -d   # PostgreSQL (and Redis); needs docker/.env, see docker/.env.docker.example
 make migrate                      # apply the database migrations
-dotnet run --project src/Zin.CLI -- create-admin --email you@example.com --password '...'
+dotnet run --project src/CLI -- create-admin --email you@example.com --password '...'
 make server                       # API on :8080, gRPC on :8081
 ```
 
@@ -63,7 +63,7 @@ Responses are wrapped as `{ "data": ... }` on success and `{ "error": ... }` on 
 ## gRPC
 
 `device.DeviceGRPC/Ping` takes one report per call (identity, hardware, usage, every process). The server creates the
-device on the first call and updates it after that. The contract lives in `src/Zin.API/Protos/Device.proto` and must stay
+device on the first call and updates it after that. The contract lives in `src/API/Protos/Device.proto` and must stay
 identical to `proto/device.proto` in the exporter repo; change both together.
 
 The gRPC port has no TLS and does not check who calls it yet.

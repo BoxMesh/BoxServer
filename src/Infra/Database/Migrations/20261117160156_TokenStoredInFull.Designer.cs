@@ -3,6 +3,7 @@ using System;
 using Zin.Infra.Database.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Zin.Infra.Database.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261117160156_TokenStoredInFull")]
+    partial class TokenStoredInFull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -167,10 +170,7 @@ namespace Zin.Infra.Database.Migrations
                     b.ToTable("DeviceMetric", (string)null);
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("Zin.Infra.Database.Entities.Group", b =>
-=======
-            modelBuilder.Entity("BoxServer.Infra.Database.Entities.EnrollmentToken", b =>
+            modelBuilder.Entity("Zin.Infra.Database.Entities.EnrollmentToken", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -207,8 +207,7 @@ namespace Zin.Infra.Database.Migrations
                     b.ToTable("EnrollmentToken", (string)null);
                 });
 
-            modelBuilder.Entity("BoxServer.Infra.Database.Entities.Group", b =>
->>>>>>> 65f75d90a185857fa45e93f12ee77297c18b648b
+            modelBuilder.Entity("Zin.Infra.Database.Entities.Group", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

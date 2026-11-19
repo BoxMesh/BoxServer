@@ -1,4 +1,4 @@
-namespace BoxServer.Infra.Database.Entities;
+﻿namespace Zin.Infra.Database.Entities;
 
 /// <summary>
 /// What an agent presents to enroll. It only authenticates the enrollment; it belongs to no group. CreatedBy records the
