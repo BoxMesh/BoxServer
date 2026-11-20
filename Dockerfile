@@ -19,6 +19,8 @@ RUN dotnet ef migrations bundle \
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 COPY --from=build /app .
+# Npgsql probes for Kerberos (GSSAPI) on connect; without this library it logs "cannot load libgssapi_krb5.so.2".
+RUN apt-get update && apt-get install -y --no-install-recommends libgssapi-krb5-2 && rm -rf /var/lib/apt/lists/*
 USER $APP_UID
 EXPOSE 8080 8081
 ENTRYPOINT ["/bin/sh", "-c", "./efbundle && exec dotnet API.dll"]
