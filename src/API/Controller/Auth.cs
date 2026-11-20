@@ -35,7 +35,7 @@ public class AuthController(
             return Unauthorized();
         }
         jwtSecret.SetSessionCookie(Response, user);
-        return Ok(new AccountResponse(user.Id, user.Email, user.Role));
+        return Ok(new AccountResponse(user.Id, user.Email, user.Role, user.Name));
     }
 
     [HttpPost("/log-out")]
