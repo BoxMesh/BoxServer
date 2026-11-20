@@ -46,15 +46,16 @@ public class JWTSecret(IConfiguration configuration)
         response.Cookies.Append(SessionCookie, CreateToken(user, SessionLifetime), new CookieOptions
         {
             HttpOnly = true,
-            SameSite = SameSiteMode.Strict,
+            // shortcut: None+Secure so a frontend on another domain can send the cookie; back to Strict once both share a site.
+            SameSite = SameSiteMode.None,
             Path = "/",
             MaxAge = SessionLifetime,
-            Secure = response.HttpContext.Request.IsHttps,
+            Secure = true,
         });
     }
 
     public static void ClearSessionCookie(HttpResponse response)
     {
-        response.Cookies.Delete(SessionCookie, new CookieOptions { Path = "/" });
+        response.Cookies.Delete(SessionCookie, new CookieOptions { Path = "/", SameSite = SameSiteMode.None, Secure = true });
     }
 }
