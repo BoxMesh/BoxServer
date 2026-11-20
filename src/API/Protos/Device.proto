@@ -36,6 +36,7 @@ message DeviceProcess {
     string status = 4;
     double cpu = 5;
     double memory_mb = 6;
+    int32 ppid = 7;
 }
 
 message DeviceResponse {

@@ -35,7 +35,7 @@ public class GDeviceService(DeviceService deviceService) : DeviceGRPC.DeviceGRPC
             DiskUsage=device.DiskUsage,
             NetIn=device.NetIn,
             NetOut=device.NetOut,
-            Processes=ProcessResponse.ToJson(device.Processes.Select(p => new ProcessResponse(p.Pid, p.Name, p.User, p.Status, p.Cpu, p.MemoryMb))),
+            Processes=ProcessResponse.ToJson(device.Processes.Select(p => new ProcessResponse(p.Pid, p.Name, p.User, p.Status, p.Cpu, p.MemoryMb, p.Ppid))),
         });
         return new DeviceResponse{Data = Any.Pack(new BoolValue { Value = dPing != null })};
     }
